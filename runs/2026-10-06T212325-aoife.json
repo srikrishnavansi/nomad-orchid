@@ -1,0 +1,683 @@
+{
+ "asker": {
+  "key": "aoife",
+  "name": "Aoife Byrne",
+  "login": "aoife@liffeyfixings.test",
+  "role": "Sales rep (own customers only)",
+  "uid": 5
+ },
+ "question": "Which orders this month were priced off the list price or off the agreed rebate?",
+ "asked_at": "2026-10-06T21:23:25",
+ "plan": {
+  "in_scope": true,
+  "date_from": "2026-10-01",
+  "date_to": "2026-10-06",
+  "customer_ids": [],
+  "reading": "Confirmed sales orders dated from 1 October 2026 through today (6 October) for all visible customers, checked against the trade list price and agreed rebate.",
+  "planned_by": "claude-sonnet-5-5"
+ },
+ "totals": {
+  "orders_checked": 6,
+  "lines_checked": 19,
+  "lines_flagged": 3,
+  "orders_flagged": 3,
+  "overcharged_total": 889.87,
+  "undercharged_total": 3.5
+ },
+ "findings": [
+  {
+   "order": {
+    "value": "S00058",
+    "source": {
+     "model": "sale.order",
+     "id": 58,
+     "field": "name",
+     "href": "http://127.0.0.1:8069/odoo/sale.order/58"
+    }
+   },
+   "order_date": {
+    "value": "2026-10-06 07:17:00",
+    "source": {
+     "model": "sale.order",
+     "id": 58,
+     "field": "date_order",
+     "href": "http://127.0.0.1:8069/odoo/sale.order/58"
+    }
+   },
+   "customer": {
+    "value": "Kilmainham Interiors",
+    "source": {
+     "model": "sale.order",
+     "id": 58,
+     "field": "partner_id",
+     "href": "http://127.0.0.1:8069/odoo/sale.order/58"
+    }
+   },
+   "salesperson": {
+    "value": "Aoife Byrne",
+    "source": {
+     "model": "sale.order",
+     "id": 58,
+     "field": "user_id",
+     "href": "http://127.0.0.1:8069/odoo/sale.order/58"
+    }
+   },
+   "product": {
+    "value": "Hi-Vis Vest, pack of 10",
+    "source": {
+     "model": "sale.order.line",
+     "id": 168,
+     "field": "product_id",
+     "href": "http://127.0.0.1:8069/odoo/sale.order/58"
+    }
+   },
+   "qty": {
+    "value": 2.0,
+    "source": {
+     "model": "sale.order.line",
+     "id": 168,
+     "field": "product_uom_qty",
+     "href": "http://127.0.0.1:8069/odoo/sale.order/58"
+    }
+   },
+   "charged_unit_price": {
+    "value": 35.0,
+    "source": {
+     "model": "sale.order.line",
+     "id": 168,
+     "field": "price_unit",
+     "href": "http://127.0.0.1:8069/odoo/sale.order/58"
+    }
+   },
+   "charged_discount_pct": {
+    "value": 10.0,
+    "source": {
+     "model": "sale.order.line",
+     "id": 168,
+     "field": "discount",
+     "href": "http://127.0.0.1:8069/odoo/sale.order/58"
+    }
+   },
+   "charged_subtotal": {
+    "value": 63.0,
+    "source": {
+     "model": "sale.order.line",
+     "id": 168,
+     "field": "price_subtotal",
+     "href": "http://127.0.0.1:8069/odoo/sale.order/58"
+    }
+   },
+   "list_price": {
+    "value": 35.0,
+    "source": {
+     "model": "product.pricelist.item",
+     "id": 9,
+     "field": "fixed_price",
+     "href": "http://127.0.0.1:8069/odoo/product.pricelist/2"
+    }
+   },
+   "agreement": {
+    "value": "Rebate agreement: Kilmainham Interiors (EUR)",
+    "source": {
+     "model": "res.partner",
+     "id": 11,
+     "field": "property_product_pricelist",
+     "href": "http://127.0.0.1:8069/odoo/res.partner/11"
+    }
+   },
+   "agreed_rebate_pct": {
+    "value": 5.0,
+    "source": {
+     "model": "product.pricelist.item",
+     "id": 14,
+     "field": "percent_price",
+     "href": "http://127.0.0.1:8069/odoo/product.pricelist/5"
+    }
+   },
+   "expected_subtotal": {
+    "value": 66.5,
+    "computed": "list_price x (1 - agreed_rebate_pct/100) x qty",
+    "inputs": [
+     "list_price",
+     "agreed_rebate_pct",
+     "qty"
+    ]
+   },
+   "variance": {
+    "value": -3.5,
+    "computed": "charged_subtotal - expected_subtotal (positive = customer overcharged)",
+    "inputs": [
+     "charged_subtotal",
+     "expected_subtotal"
+    ]
+   },
+   "issue": {
+    "value": [
+     "off_rebate"
+    ],
+    "computed": "off_list if charged_unit_price != list_price; off_rebate if charged_discount_pct != agreed_rebate_pct",
+    "inputs": [
+     "charged_unit_price",
+     "list_price",
+     "charged_discount_pct",
+     "agreed_rebate_pct"
+    ]
+   },
+   "_ids": {
+    "order_id": 58,
+    "line_id": 168,
+    "partner_id": 11
+   }
+  },
+  {
+   "order": {
+    "value": "S00056",
+    "source": {
+     "model": "sale.order",
+     "id": 56,
+     "field": "name",
+     "href": "http://127.0.0.1:8069/odoo/sale.order/56"
+    }
+   },
+   "order_date": {
+    "value": "2026-10-06 10:16:00",
+    "source": {
+     "model": "sale.order",
+     "id": 56,
+     "field": "date_order",
+     "href": "http://127.0.0.1:8069/odoo/sale.order/56"
+    }
+   },
+   "customer": {
+    "value": "Brennan Builders",
+    "source": {
+     "model": "sale.order",
+     "id": 56,
+     "field": "partner_id",
+     "href": "http://127.0.0.1:8069/odoo/sale.order/56"
+    }
+   },
+   "salesperson": {
+    "value": "Aoife Byrne",
+    "source": {
+     "model": "sale.order",
+     "id": 56,
+     "field": "user_id",
+     "href": "http://127.0.0.1:8069/odoo/sale.order/56"
+    }
+   },
+   "product": {
+    "value": "Angle Grinder 115mm",
+    "source": {
+     "model": "sale.order.line",
+     "id": 161,
+     "field": "product_id",
+     "href": "http://127.0.0.1:8069/odoo/sale.order/56"
+    }
+   },
+   "qty": {
+    "value": 12.0,
+    "source": {
+     "model": "sale.order.line",
+     "id": 161,
+     "field": "product_uom_qty",
+     "href": "http://127.0.0.1:8069/odoo/sale.order/56"
+    }
+   },
+   "charged_unit_price": {
+    "value": 172.8,
+    "source": {
+     "model": "sale.order.line",
+     "id": 161,
+     "field": "price_unit",
+     "href": "http://127.0.0.1:8069/odoo/sale.order/56"
+    }
+   },
+   "charged_discount_pct": {
+    "value": 8.0,
+    "source": {
+     "model": "sale.order.line",
+     "id": 161,
+     "field": "discount",
+     "href": "http://127.0.0.1:8069/odoo/sale.order/56"
+    }
+   },
+   "charged_subtotal": {
+    "value": 1907.71,
+    "source": {
+     "model": "sale.order.line",
+     "id": 161,
+     "field": "price_subtotal",
+     "href": "http://127.0.0.1:8069/odoo/sale.order/56"
+    }
+   },
+   "list_price": {
+    "value": 96.0,
+    "source": {
+     "model": "product.pricelist.item",
+     "id": 7,
+     "field": "fixed_price",
+     "href": "http://127.0.0.1:8069/odoo/product.pricelist/2"
+    }
+   },
+   "agreement": {
+    "value": "Rebate agreement: Brennan Builders (EUR)",
+    "source": {
+     "model": "res.partner",
+     "id": 9,
+     "field": "property_product_pricelist",
+     "href": "http://127.0.0.1:8069/odoo/res.partner/9"
+    }
+   },
+   "agreed_rebate_pct": {
+    "value": 8.0,
+    "source": {
+     "model": "product.pricelist.item",
+     "id": 11,
+     "field": "percent_price",
+     "href": "http://127.0.0.1:8069/odoo/product.pricelist/3"
+    }
+   },
+   "expected_subtotal": {
+    "value": 1059.84,
+    "computed": "list_price x (1 - agreed_rebate_pct/100) x qty",
+    "inputs": [
+     "list_price",
+     "agreed_rebate_pct",
+     "qty"
+    ]
+   },
+   "variance": {
+    "value": 847.87,
+    "computed": "charged_subtotal - expected_subtotal (positive = customer overcharged)",
+    "inputs": [
+     "charged_subtotal",
+     "expected_subtotal"
+    ]
+   },
+   "issue": {
+    "value": [
+     "off_list"
+    ],
+    "computed": "off_list if charged_unit_price != list_price; off_rebate if charged_discount_pct != agreed_rebate_pct",
+    "inputs": [
+     "charged_unit_price",
+     "list_price",
+     "charged_discount_pct",
+     "agreed_rebate_pct"
+    ]
+   },
+   "_ids": {
+    "order_id": 56,
+    "line_id": 161,
+    "partner_id": 9
+   }
+  },
+  {
+   "order": {
+    "value": "S00057",
+    "source": {
+     "model": "sale.order",
+     "id": 57,
+     "field": "name",
+     "href": "http://127.0.0.1:8069/odoo/sale.order/57"
+    }
+   },
+   "order_date": {
+    "value": "2026-10-06 10:26:00",
+    "source": {
+     "model": "sale.order",
+     "id": 57,
+     "field": "date_order",
+     "href": "http://127.0.0.1:8069/odoo/sale.order/57"
+    }
+   },
+   "customer": {
+    "value": "Dockside Construction",
+    "source": {
+     "model": "sale.order",
+     "id": 57,
+     "field": "partner_id",
+     "href": "http://127.0.0.1:8069/odoo/sale.order/57"
+    }
+   },
+   "salesperson": {
+    "value": "Aoife Byrne",
+    "source": {
+     "model": "sale.order",
+     "id": 57,
+     "field": "user_id",
+     "href": "http://127.0.0.1:8069/odoo/sale.order/57"
+    }
+   },
+   "product": {
+    "value": "Hi-Vis Vest, pack of 10",
+    "source": {
+     "model": "sale.order.line",
+     "id": 165,
+     "field": "product_id",
+     "href": "http://127.0.0.1:8069/odoo/sale.order/57"
+    }
+   },
+   "qty": {
+    "value": 12.0,
+    "source": {
+     "model": "sale.order.line",
+     "id": 165,
+     "field": "product_uom_qty",
+     "href": "http://127.0.0.1:8069/odoo/sale.order/57"
+    }
+   },
+   "charged_unit_price": {
+    "value": 35.0,
+    "source": {
+     "model": "sale.order.line",
+     "id": 165,
+     "field": "price_unit",
+     "href": "http://127.0.0.1:8069/odoo/sale.order/57"
+    }
+   },
+   "charged_discount_pct": {
+    "value": 0.0,
+    "source": {
+     "model": "sale.order.line",
+     "id": 165,
+     "field": "discount",
+     "href": "http://127.0.0.1:8069/odoo/sale.order/57"
+    }
+   },
+   "charged_subtotal": {
+    "value": 420.0,
+    "source": {
+     "model": "sale.order.line",
+     "id": 165,
+     "field": "price_subtotal",
+     "href": "http://127.0.0.1:8069/odoo/sale.order/57"
+    }
+   },
+   "list_price": {
+    "value": 35.0,
+    "source": {
+     "model": "product.pricelist.item",
+     "id": 9,
+     "field": "fixed_price",
+     "href": "http://127.0.0.1:8069/odoo/product.pricelist/2"
+    }
+   },
+   "agreement": {
+    "value": "Rebate agreement: Dockside Construction (EUR)",
+    "source": {
+     "model": "res.partner",
+     "id": 10,
+     "field": "property_product_pricelist",
+     "href": "http://127.0.0.1:8069/odoo/res.partner/10"
+    }
+   },
+   "agreed_rebate_pct": {
+    "value": 10.0,
+    "source": {
+     "model": "product.pricelist.item",
+     "id": 12,
+     "field": "percent_price",
+     "href": "http://127.0.0.1:8069/odoo/product.pricelist/4"
+    }
+   },
+   "expected_subtotal": {
+    "value": 378.0,
+    "computed": "list_price x (1 - agreed_rebate_pct/100) x qty",
+    "inputs": [
+     "list_price",
+     "agreed_rebate_pct",
+     "qty"
+    ]
+   },
+   "variance": {
+    "value": 42.0,
+    "computed": "charged_subtotal - expected_subtotal (positive = customer overcharged)",
+    "inputs": [
+     "charged_subtotal",
+     "expected_subtotal"
+    ]
+   },
+   "issue": {
+    "value": [
+     "off_rebate"
+    ],
+    "computed": "off_list if charged_unit_price != list_price; off_rebate if charged_discount_pct != agreed_rebate_pct",
+    "inputs": [
+     "charged_unit_price",
+     "list_price",
+     "charged_discount_pct",
+     "agreed_rebate_pct"
+    ]
+   },
+   "_ids": {
+    "order_id": 57,
+    "line_id": 165,
+    "partner_id": 10
+   }
+  }
+ ],
+ "skipped": [],
+ "facts_index": {
+  "F1": {
+   "order_id": 58,
+   "line_id": 168,
+   "partner_id": 11
+  },
+  "F2": {
+   "order_id": 56,
+   "line_id": 161,
+   "partner_id": 9
+  },
+  "F3": {
+   "order_id": 57,
+   "line_id": 165,
+   "partner_id": 10
+  }
+ },
+ "summary": {
+  "text": "Three of the 6 orders checked this month have a flagged line [F1][F2][F3]. S00058 for Kilmainham Interiors was charged a 10.0% discount against an agreed rebate of 5.0%, so it was undercharged by 3.5 [F1]. S00056 for Brennan Builders was priced off list, with a charged unit price of 172.8 against a list price of 96.0, giving a variance of 847.87 [F2]. S00057 for Dockside Construction was charged 0.0% discount against an agreed 10.0% rebate, a variance of 42.0 [F3].",
+  "by": "claude-sonnet-5-5"
+ },
+ "draft": {
+  "kind": "email",
+  "model": "mail.activity",
+  "id": 1,
+  "state": "to-do (today), not sent",
+  "reused": true,
+  "subject": "Credit note for order S00056 - Angle Grinder 115mm pricing correction",
+  "body": "Dear Brennan Builders team,\n\nDuring a review of recent orders we found that order S00056 was priced incorrectly. The Angle Grinder 115mm (quantity 12.0) was invoiced at a unit price of 172.8, whereas the list price is 96.0 and your agreed rebate is 8.0% [F2].\n\nThis resulted in an overcharge. The charged subtotal was 1907.71 against an expected subtotal of 1059.84, a net difference of 847.87 EUR [F2]. We will be issuing a credit note for 847.87 EUR to correct this.\n\nWe apologise for the error. Please let us know if you have any questions.\n\nKind regards,\nAoife Byrne\nLiffey Fixings Ltd",
+  "to": "Brennan Builders",
+  "credit_note_refused": "Odoo refused a draft credit note for this user (AccessError): You are not allowed to create 'Journal Entry' (account.move) records.",
+  "url": "http://127.0.0.1:8069/odoo/sale.order/56"
+ },
+ "odoo_calls": [
+  {
+   "model": "sale.order",
+   "method": "search_read",
+   "domain": [],
+   "rows": 36
+  },
+  {
+   "model": "sale.order",
+   "method": "search_read",
+   "domain": [
+    [
+     "state",
+     "=",
+     "sale"
+    ],
+    [
+     "date_order",
+     ">=",
+     "2026-10-01 00:00:00"
+    ],
+    [
+     "date_order",
+     "<=",
+     "2026-10-06 23:59:59"
+    ]
+   ],
+   "rows": 6
+  },
+  {
+   "model": "sale.order.line",
+   "method": "search_read",
+   "domain": [
+    [
+     "order_id",
+     "in",
+     [
+      51,
+      52,
+      53,
+      58,
+      56,
+      57
+     ]
+    ],
+    [
+     "display_type",
+     "=",
+     false
+    ]
+   ],
+   "rows": 19
+  },
+  {
+   "model": "product.product",
+   "method": "read",
+   "rows": 8
+  },
+  {
+   "model": "product.category",
+   "method": "search_read",
+   "domain": [],
+   "rows": 7
+  },
+  {
+   "model": "res.partner",
+   "method": "read",
+   "rows": 3
+  },
+  {
+   "model": "product.pricelist.item",
+   "method": "search_read",
+   "domain": [
+    [
+     "pricelist_id",
+     "in",
+     [
+      3,
+      4,
+      5
+     ]
+    ]
+   ],
+   "rows": 4
+  },
+  {
+   "model": "product.pricelist.item",
+   "method": "search_read",
+   "domain": [
+    [
+     "pricelist_id",
+     "in",
+     [
+      2
+     ]
+    ]
+   ],
+   "rows": 10
+  },
+  {
+   "model": "account.move",
+   "method": "search_read",
+   "domain": [
+    [
+     "move_type",
+     "=",
+     "out_refund"
+    ],
+    [
+     "state",
+     "=",
+     "draft"
+    ],
+    [
+     "ref",
+     "=",
+     "Orchid draft: S00056 pricing correction"
+    ],
+    [
+     "create_uid",
+     "=",
+     5
+    ]
+   ],
+   "rows": 0
+  },
+  {
+   "model": "account.move",
+   "method": "create",
+   "refused": "AccessError"
+  },
+  {
+   "model": "mail.activity",
+   "method": "search_read",
+   "domain": [
+    [
+     "res_model",
+     "=",
+     "sale.order"
+    ],
+    [
+     "res_id",
+     "=",
+     56
+    ],
+    [
+     "summary",
+     "=",
+     "Orchid draft email: S00056 pricing"
+    ],
+    [
+     "user_id",
+     "=",
+     5
+    ]
+   ],
+   "rows": 1
+  },
+  {
+   "model": "mail.activity",
+   "method": "write"
+  },
+  {
+   "model": "mail.activity",
+   "method": "read",
+   "rows": 1
+  }
+ ],
+ "auto_sent": 0,
+ "llm": {
+  "model": "claude-sonnet-5-5",
+  "key_present": true,
+  "token_cap": 20000,
+  "tokens_used": 2620,
+  "calls": [
+   {
+    "step": "plan",
+    "input_tokens": 591,
+    "output_tokens": 100
+   },
+   {
+    "step": "explain",
+    "input_tokens": 1428,
+    "output_tokens": 501
+   }
+  ]
+ },
+ "notes": []
+}
