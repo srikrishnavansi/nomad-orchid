@@ -1,0 +1,211 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Orchid reading phase</title>
+<style>
+:root{
+  --bg:#f6f5f2; --panel:#fff; --ink:#1b1b1f; --muted:#6b6b76; --line:#e6e3dd; --soft:#f0eee9;
+  --accent:#3b5bdb; --accent-soft:#e8edff; --over:#b42318; --over-soft:#fdecea; --under:#9a6700; --under-soft:#fff4d6;
+  --ok:#137333; --ok-soft:#e6f4ea; --mono:ui-monospace,SFMono-Regular,Menlo,monospace;
+}
+@media (prefers-color-scheme:dark){:root{
+  --bg:#141417; --panel:#1c1c21; --ink:#ececf1; --muted:#9a9aa6; --line:#2c2c33; --soft:#24242b;
+  --accent:#8ea2ff; --accent-soft:#232a45; --over:#ff8a80; --over-soft:#3a1f1d; --under:#f5c451; --under-soft:#352c14; --ok:#7ee2a0; --ok-soft:#173222;
+}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:14px/1.5 -apple-system,BlinkMacSystemFont,"Inter","Segoe UI",sans-serif}
+header{display:flex;align-items:center;gap:16px;padding:14px 24px;border-bottom:1px solid var(--line);background:var(--panel);position:sticky;top:0;z-index:5;flex-wrap:wrap}
+.brand{font-weight:650;letter-spacing:-.01em}.brand small{color:var(--muted);font-weight:450;margin-left:6px}
+.users{display:flex;gap:4px;background:var(--soft);padding:3px;border-radius:10px;margin-left:auto;flex-wrap:wrap}
+.users button{border:0;background:transparent;color:var(--muted);padding:6px 12px;border-radius:8px;cursor:pointer;font:inherit;text-align:left;line-height:1.2}
+.users button b{display:block;color:var(--ink);font-weight:550}.users button span{font-size:11.5px}
+.users button[aria-pressed=true]{background:var(--panel);box-shadow:0 1px 2px rgba(0,0,0,.08)}
+.sent{display:flex;align-items:center;gap:8px;padding:7px 12px;border-radius:999px;background:var(--ok-soft);color:var(--ok);font-weight:600;font-variant-numeric:tabular-nums}
+.sent i{width:8px;height:8px;border-radius:50%;background:var(--ok)}
+main{max-width:1180px;margin:0 auto;padding:24px;display:grid;gap:18px}
+main,#out{grid-template-columns:minmax(0,1fr)}#out{display:grid;gap:18px}
+.tablewrap{overflow-x:auto}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:18px}
+.ask{display:flex;gap:10px}
+.ask textarea{flex:1;resize:vertical;min-height:46px;border:1px solid var(--line);border-radius:10px;padding:11px 12px;font:inherit;background:var(--panel);color:var(--ink)}
+.ask textarea:focus{outline:2px solid var(--accent-soft);border-color:var(--accent)}
+.btn{border:0;background:var(--ink);color:var(--panel);padding:0 18px;border-radius:10px;font:inherit;font-weight:600;cursor:pointer}
+.btn:disabled{opacity:.5;cursor:wait}
+.chips{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px;align-items:center}
+.chip{border:1px solid var(--line);background:transparent;color:var(--muted);border-radius:999px;padding:4px 10px;font:inherit;font-size:12.5px;cursor:pointer}
+.chip:hover{color:var(--ink);border-color:var(--muted)}
+label.toggle{margin-left:auto;color:var(--muted);font-size:12.5px;display:flex;gap:6px;align-items:center}
+.meta{color:var(--muted);font-size:12.5px;display:flex;gap:14px;flex-wrap:wrap}
+.meta b{color:var(--ink);font-weight:550}
+.summary{font-size:16px;line-height:1.55;margin:10px 0 0}
+.fref{font:600 11.5px var(--mono);color:var(--accent);background:var(--accent-soft);border-radius:5px;padding:1px 5px;cursor:pointer;border:0}
+.tiles{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:16px}
+.tile{background:var(--soft);border-radius:10px;padding:10px 12px}.tile div{color:var(--muted);font-size:12px}
+.tile strong{font-size:20px;font-variant-numeric:tabular-nums;font-weight:620}
+.tile.over strong{color:var(--over)}.tile.under strong{color:var(--under)}
+table{width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums}
+th{text-align:left;font-weight:550;color:var(--muted);font-size:12px;padding:8px 8px;border-bottom:1px solid var(--line);white-space:nowrap}
+td{padding:9px 8px;border-bottom:1px solid var(--line);vertical-align:top}
+tr.hl td{background:var(--accent-soft);transition:background .6s}
+td.num{text-align:right;white-space:nowrap}
+.c{cursor:pointer;border-bottom:1px dashed var(--muted);padding-bottom:1px}
+.c:hover{color:var(--accent);border-bottom-color:var(--accent)}
+.c.calc{border-bottom-style:dotted}
+.tag{display:inline-block;font-size:11.5px;font-weight:600;border-radius:5px;padding:1px 6px;margin:0 3px 3px 0}
+.tag.off_list{background:var(--over-soft);color:var(--over)}.tag.off_rebate{background:var(--under-soft);color:var(--under)}
+.pos{color:var(--over);font-weight:600}.neg{color:var(--under);font-weight:600}
+.sub{color:var(--muted);font-size:12px}td .sub{white-space:nowrap}
+.draft h3,.card h3{margin:0 0 8px;font-size:14px;font-weight:620}
+.draft .state{display:inline-block;background:var(--soft);border-radius:6px;padding:2px 8px;font-size:12px;margin-left:6px;font-weight:550}
+.draft pre{white-space:pre-wrap;font:inherit;background:var(--soft);border-radius:10px;padding:14px;margin:10px 0 0}
+.note{color:var(--muted);font-size:12.5px;margin-top:8px}
+a{color:var(--accent)}
+details summary{cursor:pointer;color:var(--muted);font-size:12.5px}
+.calls{font:12px/1.6 var(--mono);color:var(--muted);margin-top:8px;overflow-x:auto}
+.calls .refused{color:var(--over)}
+aside{position:fixed;top:0;right:0;height:100%;width:min(420px,100%);background:var(--panel);border-left:1px solid var(--line);box-shadow:-12px 0 30px rgba(0,0,0,.08);
+  transform:translateX(105%);transition:transform .22s ease;padding:22px;z-index:10;overflow:auto}
+aside.open{transform:none}
+aside h4{margin:0 0 14px;font-size:15px}.kv{display:grid;grid-template-columns:110px 1fr;gap:6px 10px;font-size:13px}
+.kv div:nth-child(odd){color:var(--muted)}.kv code{font:12.5px var(--mono)}
+.x{position:absolute;top:14px;right:16px;border:0;background:transparent;font-size:20px;color:var(--muted);cursor:pointer}
+.empty{color:var(--muted);text-align:center;padding:40px}
+.err{color:var(--over)}
+.spin{display:inline-block;width:14px;height:14px;border:2px solid var(--line);border-top-color:var(--accent);border-radius:50%;animation:s .8s linear infinite;vertical-align:-2px;margin-right:8px}
+@keyframes s{to{transform:rotate(360deg)}}
+@media (max-width:760px){header{padding:12px 16px;position:static}.users button span{display:none}main{padding:16px}.tiles{grid-template-columns:repeat(2,1fr)}.ask{flex-direction:column}.btn{padding:11px}}
+</style>
+</head>
+<body>
+<header>
+  <div class="brand">Orchid <small>reading phase on Odoo 19</small></div>
+  <div class="users" id="users" role="group" aria-label="Ask as"></div>
+  <div class="sent" title="Messages, credit notes or confirmations that left Odoo without a person pressing send"><i></i>auto-sent: <span id="sent">0</span></div>
+</header>
+<main>
+  <section class="card">
+    <form class="ask" id="f">
+      <textarea id="q" rows="1" aria-label="Question">Which orders this month were priced off the list price or off the agreed rebate?</textarea>
+      <button class="btn" id="go">Ask</button>
+    </form>
+    <div class="chips" id="chips">
+      <button class="chip">Which orders this month were priced off the list price or off the agreed rebate?</button>
+      <button class="chip">Any pricing problems last month for Dockside?</button>
+      <button class="chip">Which orders in August were off the rebate?</button>
+      <label class="toggle"><input type="checkbox" id="llm" checked> use the model if a key is present</label>
+    </div>
+  </section>
+  <section id="out"><div class="card empty">Pick who is asking, then ask. Every value in the answer opens the Odoo record it came from.</div></section>
+</main>
+<aside id="side" aria-live="polite"><button class="x" onclick="side.classList.remove('open')" aria-label="Close">&times;</button><div id="sidebody"></div></aside>
+<script>
+const $ = s => document.querySelector(s);
+let user = 'aoife', last = null;
+const eur = v => (v < 0 ? '-' : '') + 'EUR ' + Math.abs(v).toLocaleString('en-IE', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+const esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;'}[c]));
+
+fetch('/api/users').then(r => r.json()).then(us => {
+  $('#users').innerHTML = us.map(u => `<button data-k="${u.key}" aria-pressed="${u.key === user}"><b>${esc(u.name)}</b><span>${esc(u.role)}</span></button>`).join('');
+  $('#users').onclick = e => { const b = e.target.closest('button'); if (!b) return; user = b.dataset.k;
+    document.querySelectorAll('#users button').forEach(x => x.setAttribute('aria-pressed', x === b)); ask(); };
+});
+$('#chips').onclick = e => { if (e.target.classList.contains('chip')) { $('#q').value = e.target.textContent; ask(); } };
+$('#f').onsubmit = e => { e.preventDefault(); ask(); };
+$('#q').onkeydown = e => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); ask(); } };
+
+async function ask() {
+  $('#go').disabled = true;
+  $('#out').innerHTML = `<div class="card empty"><span class="spin"></span>Reading Odoo as ${esc(document.querySelector('#users [aria-pressed=true] b')?.textContent || user)}…</div>`;
+  try {
+    const r = await fetch('/api/ask', {method: 'POST', body: JSON.stringify({user, question: $('#q').value, llm: $('#llm').checked})});
+    const a = await r.json();
+    if (a.error) throw new Error(a.error);
+    last = a; render(a);
+  } catch (e) { $('#out').innerHTML = `<div class="card err">${esc(e.message)}</div>`; }
+  $('#go').disabled = false;
+}
+
+// a cited value: click opens its source. key = field name inside finding i
+const cv = (i, k, text) => `<span class="c ${last.findings[i][k].source ? '' : 'calc'}" data-i="${i}" data-k="${k}">${text}</span>`;
+
+function render(a) {
+  $('#sent').textContent = a.auto_sent;
+  const p = a.plan, t = a.totals || {};
+  const summary = esc(a.summary.text).replace(/\[F(\d+)\]/g, (m, n) => `<button class="fref" data-f="${n}">F${n}</button>`);
+  let h = `<div class="card">
+    <div class="meta"><span>Read as <b>${esc(a.asker.name)}</b> (${esc(a.asker.login)})</span><span>${a.odoo_calls.length} Odoo calls with their own session</span>
+      <span>Plan by <b>${esc(p.planned_by)}</b>: ${esc(p.reading)}</span><span>Prose by <b>${esc(a.summary.by)}</b></span>
+      <span>Model tokens ${a.llm.tokens_used.toLocaleString()} / ${a.llm.token_cap.toLocaleString()} cap</span></div>
+    <p class="summary">${summary}</p>`;
+  if (a.totals) h += `<div class="tiles">
+      <div class="tile"><div>Lines flagged</div><strong>${t.lines_flagged}</strong> <span class="sub">of ${t.lines_checked}</span></div>
+      <div class="tile"><div>Orders flagged</div><strong>${t.orders_flagged}</strong> <span class="sub">of ${t.orders_checked}</span></div>
+      <div class="tile over"><div>Customers overcharged</div><strong>${eur(t.overcharged_total)}</strong></div>
+      <div class="tile under"><div>Customers undercharged</div><strong>${eur(t.undercharged_total)}</strong></div></div>`;
+  h += (a.notes || []).map(n => `<div class="note">Note: ${esc(n)}</div>`).join('') + `</div>`;
+
+  if (a.findings.length) {
+    h += `<div class="card"><h3>Lines off the list price or the agreed rebate</h3><div class="tablewrap"><table><thead><tr>
+      <th></th><th>Order</th><th>Customer</th><th>Product</th><th class="num">Qty</th><th class="num">Charged</th><th class="num">Agreed</th><th class="num">Variance</th><th>Issue</th></tr></thead><tbody>`;
+    a.findings.forEach((f, i) => {
+      h += `<tr id="F${i + 1}"><td><span class="fref">F${i + 1}</span></td>
+        <td>${cv(i, 'order', esc(f.order.value))}<div class="sub">${cv(i, 'order_date', esc(f.order_date.value.slice(0, 10)))}</div></td>
+        <td>${cv(i, 'customer', esc(f.customer.value))}<div class="sub">${cv(i, 'salesperson', esc(f.salesperson.value))}</div></td>
+        <td>${cv(i, 'product', esc(f.product.value))}</td>
+        <td class="num">${cv(i, 'qty', f.qty.value)}</td>
+        <td class="num">${cv(i, 'charged_unit_price', f.charged_unit_price.value.toFixed(2))} less ${cv(i, 'charged_discount_pct', f.charged_discount_pct.value + '%')}
+          <div class="sub">${cv(i, 'charged_subtotal', eur(f.charged_subtotal.value))}</div></td>
+        <td class="num">${cv(i, 'list_price', f.list_price.value.toFixed(2))} less ${cv(i, 'agreed_rebate_pct', f.agreed_rebate_pct.value + '%')}
+          <div class="sub">${cv(i, 'expected_subtotal', eur(f.expected_subtotal.value))}</div></td>
+        <td class="num ${f.variance.value > 0 ? 'pos' : 'neg'}">${cv(i, 'variance', (f.variance.value > 0 ? '+' : '') + f.variance.value.toFixed(2))}</td>
+        <td>${f.issue.value.map(x => `<span class="tag ${x}">${x === 'off_list' ? 'off list price' : 'off rebate'}</span>`).join('')}
+          <div class="sub">${cv(i, 'agreement', 'agreement')}${f.rule_scope ? ' · ' + cv(i, 'rule_scope', esc(f.rule_scope.value) + ' rule') : ''}</div></td></tr>`;
+    });
+    h += `</tbody></table></div><div class="note">Dashed values are read from one Odoo record each; dotted values are computed in code from them. Click any value.</div></div>`;
+  }
+
+  const d = a.draft;
+  if (d) h += `<div class="card draft"><h3>${d.kind === 'credit_note' ? 'Draft credit note' : 'Draft email to ' + esc(d.to)}
+      <span class="state">${esc(d.state)}</span></h3>
+      <div class="meta"><span>Odoo <code>${esc(d.model)}</code> #${d.id}${d.reused ? ' (updated in place)' : ''}</span>
+        ${d.amount ? `<span>Amount <b>${eur(d.amount)}</b></span>` : ''}<a href="${esc(d.url)}" target="_blank" rel="noopener">Open in Odoo</a></div>
+      ${d.credit_note_refused ? `<div class="note">${esc(d.credit_note_refused)} So this is a draft email, kept as an Email to-do on the order.</div>` : ''}
+      <pre><b>${esc(d.subject)}</b>\n\n${esc(d.body)}</pre>
+      <div class="note">Nothing was sent. A named person opens it in Odoo and decides.</div></div>`;
+
+  h += `<div class="card"><details><summary>Every Odoo call made as ${esc(a.asker.login)} (${a.odoo_calls.length})</summary><div class="calls">${
+    a.odoo_calls.map(c => `<div class="${c.refused ? 'refused' : ''}">${esc(c.model)}.${esc(c.method)} ${c.domain ? esc(JSON.stringify(c.domain)) : ''} ${c.rows !== undefined ? '→ ' + c.rows + ' rows' : ''} ${c.refused ? '→ refused: ' + esc(c.refused) : ''}</div>`).join('')
+  }</div></details></div>`;
+  $('#out').innerHTML = h;
+}
+
+$('#out').onclick = async e => {
+  const fr = e.target.closest('.fref[data-f]');
+  if (fr) { const row = $('#F' + fr.dataset.f); row.scrollIntoView({behavior: 'smooth', block: 'center'}); row.classList.add('hl'); setTimeout(() => row.classList.remove('hl'), 1400); return; }
+  const c = e.target.closest('.c'); if (!c) return;
+  const f = last.findings[c.dataset.i], v = f[c.dataset.k], side = $('#side');
+  if (v.source) {
+    const s = v.source;
+    $('#sidebody').innerHTML = `<h4>Source of “${esc(c.dataset.k.replace(/_/g, ' '))}”</h4><div class="kv">
+      <div>Model</div><div><code>${esc(s.model)}</code></div><div>Record id</div><div><code>${s.id}</code></div>
+      <div>Field</div><div><code>${esc(s.field)}</code></div><div>Value cited</div><div><b>${esc(v.value)}</b></div>
+      <div>Live re-read</div><div id="live"><span class="spin"></span></div></div>
+      <p><a href="${esc(s.href)}" target="_blank" rel="noopener">Open the record in Odoo</a></p>`;
+    side.classList.add('open');
+    const r = await (await fetch(`/api/source?user=${user}&model=${encodeURIComponent(s.model)}&id=${s.id}&field=${encodeURIComponent(s.field)}`)).json();
+    const live = Array.isArray(r.value) ? r.value[1] : r.value;
+    $('#live').innerHTML = r.error ? `<span class="err">${esc(r.error)}</span>` :
+      `<b>${esc(live)}</b> ${live == v.value ? '<span style="color:var(--ok)">matches</span>' : '<span class="err">differs</span>'}<div class="sub">read just now as ${esc(r.as)}</div>`;
+  } else {
+    $('#sidebody').innerHTML = `<h4>Computed: “${esc(c.dataset.k.replace(/_/g, ' '))}”</h4><div class="kv">
+      <div>Value</div><div><b>${esc(JSON.stringify(v.value))}</b></div><div>Formula</div><div><code>${esc(v.computed)}</code></div>
+      <div>Inputs</div><div>${v.inputs.map(k => `${esc(k.replace(/_/g, ' '))}: <b>${esc(f[k].value)}</b> <span class="sub">${f[k].source ? esc(f[k].source.model + '#' + f[k].source.id + '.' + f[k].source.field) : 'computed'}</span>`).join('<br>')}</div></div>
+      <p class="note">Computed in Python with Decimal. The model never does arithmetic.</p>`;
+    side.classList.add('open');
+  }
+};
+</script>
+</body>
+</html>

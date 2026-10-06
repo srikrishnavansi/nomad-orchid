@@ -1,0 +1,6 @@
+{
+  "_note": "Local test logins created by seed.py on your own localhost Odoo. Not real accounts.",
+  "aoife": {"login": "aoife@liffeyfixings.test", "password": "orchid-aoife-7Q2", "name": "Aoife Byrne", "role": "Sales rep (own customers only)"},
+  "cian":  {"login": "cian@liffeyfixings.test",  "password": "orchid-cian-4K8",  "name": "Cian Walsh",  "role": "Sales rep (own customers only)"},
+  "niamh": {"login": "niamh@liffeyfixings.test", "password": "orchid-niamh-9M3", "name": "Niamh Kelly", "role": "Finance manager (all orders, credit notes)"}
+}

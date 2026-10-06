@@ -1,0 +1,28 @@
+# Odoo 19 Community + Postgres, bound to localhost only.
+services:
+  db:
+    image: postgres:16
+    environment:
+      POSTGRES_USER: odoo
+      POSTGRES_PASSWORD: odoo
+      POSTGRES_DB: postgres
+    volumes:
+      - odoo-db:/var/lib/postgresql/data
+
+  odoo:
+    image: odoo:19.0
+    depends_on: [db]
+    ports:
+      - "127.0.0.1:8069:8069"
+    environment:
+      HOST: db
+      USER: odoo
+      PASSWORD: odoo
+    # First boot creates the "orchid" database with Sales + Invoicing (no Odoo demo data).
+    command: ["odoo", "-d", "orchid", "--db-filter=^orchid$$", "--no-database-list", "-i", "sale_management,account"]
+    volumes:
+      - odoo-data:/var/lib/odoo
+
+volumes:
+  odoo-db:
+  odoo-data:
